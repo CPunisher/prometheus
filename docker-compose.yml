@@ -88,6 +88,25 @@ services:
     restart: always
     deploy:
       mode: global
+  
+  loki:
+    image: grafana/loki:2.8.2
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki:/etc/loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    networks:
+      - back-tier
+  
+  promtail:
+    image: grafana/promtail:2.8.2
+    volumes:
+      - /var/log:/var/log
+      - ./promtail:/etc/promtail/
+    command: -config.file=/etc/promtail/promtail-local-config.yaml
+    networks:
+      - back-tier
 
   grafana:
     image: grafana/grafana
